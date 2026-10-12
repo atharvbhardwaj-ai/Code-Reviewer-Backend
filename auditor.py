@@ -1,7 +1,11 @@
 import os
+from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 from schemas import AuditReport, SeverityLevel
+
+# Used for loading .env variables if present
+load_dotenv()
 
 class CodeAuditorEngine:
     def __init__(self):
