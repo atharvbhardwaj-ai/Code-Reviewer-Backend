@@ -9,12 +9,12 @@ from auditor import CodeAuditorEngine
 
 # Initialize the FastAPI app
 app = FastAPI(
-    title="CodeLens Audit Engine API",
+    title="Prism Audit Engine API",
     version="1.0.0",
     description="Automated Static Analysis and AI Security Review Pipeline"
 )
 
-# Enable CORS so NiceGUI (port 8080) or Streamlit (port 8501) can query this server
+# Enable CORS so NiceGUI Streamlit (port 8501) can query this server
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -65,7 +65,7 @@ def health_check():
     """Simple status check to confirm server is running."""
     return {
         "status": "online",
-        "service": "CodeLens Audit Engine",
+        "service": "PRISM Audit Engine",
         "engine_model": engine.model_name
     }
 

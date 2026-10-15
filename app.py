@@ -7,7 +7,7 @@ import streamlit as st
 # PAGE CONFIGURATION & GLASSMORPHISM THEMING
 # -------------------------------------------------------------
 st.set_page_config(
-    page_title="CodeLens PRISM - AI Code Auditor",
+    page_title="PRISM - AI Code Auditor",
     page_icon="💎",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -271,7 +271,7 @@ def render_code_diff(orig_code: str, refactored_code: str):
 # SIDEBAR
 # -------------------------------------------------------------
 with st.sidebar:
-    st.markdown("## 💎 PRISM Controls")
+    st.markdown("## PRISM Controls")
     
     # Server Connection Check
     try:
@@ -300,12 +300,12 @@ with st.sidebar:
     )
     
     st.markdown("---")
-    st.caption("CodeLens PRISM v1.0 • Built with Streamlit & FastAPI")
+    st.caption("PRISM v1.0 • Built with Streamlit & FastAPI")
 
 # -------------------------------------------------------------
 # MAIN HEADER
 # -------------------------------------------------------------
-st.markdown('<div class="prism-title">CodeLens PRISM</div>', unsafe_allow_html=True)
+st.markdown('<div class="prism-title">PRISM</div>', unsafe_allow_html=True)
 st.markdown('<div class="prism-tagline">Refracting your codebase into distinct security, quality, and algorithmic performance beams.</div>', unsafe_allow_html=True)
 
 # -------------------------------------------------------------
@@ -354,7 +354,7 @@ if trigger_audit:
         st.error("Please paste code in the text box or upload a source file first.")
     else:
         report_data = None
-        with st.spinner("✨ Refracting codebase through AI Engine..."):
+        with st.spinner("✨ Refracting codebase through PRISM AI Engine..."):
             try:
                 if input_mode == "text":
                     payload = {
@@ -479,7 +479,7 @@ if trigger_audit:
                     st.markdown(f'<div class="diff-container">{orig_diff_html}</div>', unsafe_allow_html=True)
 
                 with col_refactored:
-                    st.markdown("#### 🟢 Refactored Code (Optimized Patch)")
+                    st.markdown("#### 🟢 PRISM Refactored Code (Optimized Patch)")
                     st.markdown(f'<div class="diff-container">{refactored_diff_html}</div>', unsafe_allow_html=True)
 
                 # -------------------------------------------------------------
@@ -491,7 +491,7 @@ if trigger_audit:
                     st.download_button(
                         label="📥 Download Refactored Code",
                         data=refactored_code,
-                        file_name=f"refactored_code.{safe_lang if safe_lang != 'python' else 'py'}",
+                        file_name=f"prism_refactored.{safe_lang if safe_lang != 'python' else 'py'}",
                         mime="text/plain",
                         use_container_width=True
                     )
