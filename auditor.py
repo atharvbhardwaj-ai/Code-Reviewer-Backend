@@ -55,7 +55,7 @@ INSTRUCTIONS:
 1. VALIDATION GATE: Verify if the input is actual source code. If it is an essay, recipe, or random text, set is_valid_code to false and ignore remaining steps.
 2. Analyze for security vulnerabilities, memory leaks, algorithmic inefficiencies, and structural flaws.
 3. Determine the current and achievable optimized Big-O time and space complexity.
-4. Provide a cleanly refactored version of the code that resolves the flagged issues.
+4. Provide a cleanly refactored version of the code that resolves the flagged issues. IMPORTANT: Preserve all existing developer comments from the original code in their respective positions so the line-by-line diff only highlights actual code modifications. Do not add new explanatory comments unless necessary.
 """
         # ---------------------------------------------------------
         # LAYER 3: STRUCTURED INFERENCE & SCORING

@@ -288,13 +288,13 @@ with st.sidebar:
     st.markdown("---")
     
     selected_language = st.selectbox(
-        "🎯 Target Language",
+        "Target Language",
         options=LANGUAGES,
         index=0
     )
     
     user_comments = st.text_area(
-        "⚙️ Hardware / Context Constraints",
+        "Hardware / Context Constraints",
         placeholder="e.g. Optimize for memory consumption, O(N) linear time constraint.",
         height=100
     )
@@ -344,7 +344,7 @@ else:
         st.info(f"📁 Selected File: **{uploaded_file.name}** ({len(raw_code.splitlines())} lines)")
 
 st.markdown("<br>", unsafe_allow_html=True)
-trigger_audit = st.button("🚀 Refract & Audit Codebase", use_container_width=True, type="primary")
+trigger_audit = st.button("Refract & Audit Codebase", use_container_width=True, type="primary")
 
 # -------------------------------------------------------------
 # AUDIT PROCESSING & DISPLAY
@@ -413,7 +413,7 @@ if trigger_audit:
                     st.progress(health_score / 100)
 
                 with col_summary:
-                    st.markdown("### 💡 Executive Summary")
+                    st.markdown("### Executive Summary")
                     st.info(report_data.get("summary", "Code audit completed successfully."))
 
                 st.markdown("<br>", unsafe_allow_html=True)
@@ -437,7 +437,7 @@ if trigger_audit:
                     st.markdown(f"""
                     <div class="glass-metric">
                         <div class="metric-label">Language / Checks</div>
-                        <div class="metric-value">🔤 {lang_detected} ({passed_checks} Passed)</div>
+                        <div class="metric-value"> {lang_detected} ({passed_checks} Passed)</div>
                     </div>
                     """, unsafe_allow_html=True)
                 with s2:
@@ -467,7 +467,7 @@ if trigger_audit:
                 # -------------------------------------------------------------
                 # SIDE-BY-SIDE CODE COMPARISON (ORIGINAL VS REFACTORED)
                 # -------------------------------------------------------------
-                st.markdown("### 🔀 Side-by-Side Code Refactoring & Diff")
+                st.markdown("### Side-by-Side Code Refactoring & Diff")
                 
                 refactored_code = report_data.get("refactored_code") or raw_code
 
@@ -486,7 +486,7 @@ if trigger_audit:
                 # CLEAN COPY & DOWNLOAD TAB
                 # -------------------------------------------------------------
                 st.markdown("<br>", unsafe_allow_html=True)
-                with st.expander("📋 Copy / Inspect Pure Refactored Code", expanded=False):
+                with st.expander("Download Refactored Code", expanded=False):
                     st.code(refactored_code, language=safe_lang)
                     st.download_button(
                         label="📥 Download Refactored Code",
@@ -501,12 +501,12 @@ if trigger_audit:
                 # -------------------------------------------------------------
                 # DETAILED FINDINGS SECTION
                 # -------------------------------------------------------------
-                st.markdown("### 🔍 Audited Findings & Recommendations")
+                st.markdown("### Audited Findings & Recommendations")
                 findings = report_data.get("findings", [])
 
                 if not findings:
                     st.balloons()
-                    st.success("🎉 No vulnerabilities or anti-patterns detected! Code is production ready.")
+                    st.success("No vulnerabilities or anti-patterns detected! Code is production ready.")
                 else:
                     for i, item in enumerate(findings, 1):
                         severity = str(item.get("severity", "LOW")).upper()
@@ -525,7 +525,7 @@ if trigger_audit:
                                 <span style="font-size: 1.15rem; font-weight: 700; color: #F8FAFC;">#{i}. {title}</span>
                                 <div>
                                     <span class="{badge_class}">{severity}</span>
-                                    <span class="line-badge">📍 {line_str}</span>
+                                    <span class="line-badge">📌 {line_str}</span>
                                     <span style="color: #94A3B8; font-size: 0.85rem; margin-left: 10px;">Category: {category}</span>
                                 </div>
                             </div>
@@ -534,5 +534,5 @@ if trigger_audit:
                         """, unsafe_allow_html=True)
 
                         if fix:
-                            with st.expander(f"🛠️ View Suggested Fix for #{i} ({line_str})", expanded=False):
+                            with st.expander(f"View Suggested Fix for #{i} ({line_str})", expanded=False):
                                 st.code(fix, language=safe_lang)
