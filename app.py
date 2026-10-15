@@ -32,7 +32,6 @@ LANGUAGES = [
     "Ruby"
 ]
 
-# Simple dictionary of preset examples for instant live demoing
 DEMO_PRESETS = {
     "Custom Input (Write or Paste Own Code)": "",
     "Demo 1: Python SQL Injection (Security Flaw)": (
@@ -69,7 +68,6 @@ DEMO_PRESETS = {
         "}"
     )
 }
-
 
 def render_code_diff(orig_code: str, refactored_code: str):
     """Generates line-by-line red and green diff highlighting with line numbers."""
@@ -118,28 +116,28 @@ def render_code_diff(orig_code: str, refactored_code: str):
 
     return "".join(orig_html), "".join(refactored_html)
 
-
 # -------------------------------------------------------------
 # SIDEBAR CONTROLS
 # -------------------------------------------------------------
 with st.sidebar:
     st.markdown("## PRISM Controls")
 
-    # Server Connection Check
+    # Fetch Backend Engine Health
+    engine_status_html = '<span class="status-pill status-offline">Backend Offline (Port 8000)</span>'
     try:
         health_resp = requests.get(f"{API_BASE_URL}/", timeout=2)
         if health_resp.status_code == 200:
             server_info = health_resp.json()
             model_name = server_info.get("engine_model", "Online")
-            st.markdown(f"🟢 **Engine Status:** `Online ({model_name})`")
+            engine_status_html = f'<span class="status-pill status-online">Online ({model_name})</span>'
         else:
-            st.markdown("🟡 **Engine Status:** `Reachable (Degraded)`")
+            engine_status_html = '<span class="status-pill status-degraded">Reachable (Degraded)</span>'
     except Exception:
-        st.markdown("🔴 **Engine Status:** `Backend Offline` (Port 8000)")
+        pass
 
+    st.markdown(f"**Engine Status:** &nbsp; {engine_status_html}", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Theme Mode Switcher (Defaults to Vibrant Light for Faculty Evaluation)
     ui_theme = st.radio(
         "UI Theme Mode",
         options=["Vibrant Light (Presentation)", "Cyber Dark"],
@@ -164,28 +162,30 @@ with st.sidebar:
     st.markdown("---")
     st.caption("PRISM v1.0 • Built with Streamlit & FastAPI")
 
-
 # -------------------------------------------------------------
-# DYNAMIC THEME PALETTE (VIBRANT LIGHT VS CYBER DARK)
+# DYNAMIC THEME PALETTE DEFINITIONS
 # -------------------------------------------------------------
 if is_light:
-    # Vibrant Daylight Prism Palette (High Contrast for Projectors & Faculty)
+    # Frosted Daylight Glass Palette (High Contrast for Projectors & Faculty)
     app_bg = """
-        radial-gradient(circle at 12% 12%, rgba(255, 0, 122, 0.14) 0%, transparent 42%),
-        radial-gradient(circle at 88% 18%, rgba(147, 51, 234, 0.15) 0%, transparent 45%),
-        radial-gradient(circle at 50% 85%, rgba(0, 184, 217, 0.14) 0%, transparent 50%),
-        linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)
+        radial-gradient(circle at 10% 10%, rgba(255, 0, 122, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 90% 15%, rgba(147, 51, 234, 0.14) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(0, 184, 217, 0.12) 0%, transparent 50%),
+        linear-gradient(180deg, #F8FAFC 0%, #EEF2F6 100%)
     """
-    sidebar_bg = "linear-gradient(180deg, #F8FAFC 0%, #EEF2FF 100%)"
-    sidebar_border = "rgba(147, 51, 234, 0.18)"
+    sidebar_bg = "linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 100%)"
+    sidebar_border = "rgba(147, 51, 234, 0.16)"
+    hr_color = "rgba(148, 163, 184, 0.35)"
     text_primary = "#0F172A"
     text_secondary = "#475569"
-    card_bg = "rgba(255, 255, 255, 0.85)"
+    placeholder_color = "#64748B"
+    card_bg = "rgba(255, 255, 255, 0.88)"
     card_border = "rgba(147, 51, 234, 0.22)"
-    card_shadow = "0 10px 30px -5px rgba(147, 51, 234, 0.10), 0 4px 12px rgba(15, 23, 42, 0.05)"
-    health_bg = "radial-gradient(circle at center, rgba(168, 85, 247, 0.12) 0%, rgba(255, 255, 255, 0.95) 100%)"
+    card_shadow = "0 10px 28px -4px rgba(147, 51, 234, 0.08), 0 4px 12px rgba(15, 23, 42, 0.04)"
+    health_bg = "radial-gradient(circle at center, rgba(168, 85, 247, 0.12) 0%, rgba(255, 255, 255, 0.98) 100%)"
     input_bg = "#FFFFFF"
-    input_border = "#CBD5E1"
+    input_border = "rgba(147, 51, 234, 0.32)"
+    input_focus_border = "#9333EA"
     diff_bg = "#FFFFFF"
     diff_border = "#CBD5E1"
     diff_unchanged_text = "#334155"
@@ -193,13 +193,16 @@ if is_light:
     diff_remove_text = "#9F1239"
     diff_add_bg = "#DCFCE7"
     diff_add_text = "#166534"
-    line_badge_bg = "rgba(147, 51, 234, 0.12)"
+    line_badge_bg = "rgba(147, 51, 234, 0.10)"
     line_badge_text = "#6B21A8"
+    status_online_bg = "rgba(34, 197, 94, 0.12)"
+    status_online_text = "#15803D"
+    status_online_border = "rgba(34, 197, 94, 0.35)"
     comp_bad = "#DC2626"
     comp_good = "#16A34A"
     delta_color = "#7C3AED"
 else:
-    # Original Cyber Dark Glassmorphism Palette
+    # Cyber Dark Palette
     app_bg = """
         radial-gradient(circle at 15% 15%, rgba(126, 87, 194, 0.22) 0%, transparent 45%),
         radial-gradient(circle at 85% 20%, rgba(255, 0, 122, 0.18) 0%, transparent 40%),
@@ -208,14 +211,17 @@ else:
     """
     sidebar_bg = "#131622"
     sidebar_border = "rgba(255, 255, 255, 0.08)"
+    hr_color = "rgba(255, 255, 255, 0.12)"
     text_primary = "#F8FAFC"
     text_secondary = "#94A3B8"
+    placeholder_color = "#64748B"
     card_bg = "rgba(255, 255, 255, 0.03)"
     card_border = "rgba(255, 255, 255, 0.08)"
     card_shadow = "0 8px 32px 0 rgba(0, 0, 0, 0.37)"
     health_bg = "radial-gradient(circle at center, rgba(168, 85, 247, 0.15) 0%, rgba(255, 255, 255, 0.02) 100%)"
     input_bg = "#161B26"
     input_border = "rgba(255, 255, 255, 0.15)"
+    input_focus_border = "#A855F7"
     diff_bg = "#0d1117"
     diff_border = "rgba(255, 255, 255, 0.12)"
     diff_unchanged_text = "#8B949E"
@@ -225,15 +231,17 @@ else:
     diff_add_text = "#4EFE85"
     line_badge_bg = "rgba(168, 85, 247, 0.2)"
     line_badge_text = "#D8B4FE"
+    status_online_bg = "rgba(48, 209, 88, 0.15)"
+    status_online_text = "#4EFE85"
+    status_online_border = "rgba(48, 209, 88, 0.35)"
     comp_bad = "#FF6B6B"
     comp_good = "#4EFE85"
     delta_color = "#00E5FF"
 
-
-# Inject Dynamic CSS
+# Inject Scoped CSS
 st.markdown(f"""
 <style>
-    /* 1. Hide Top Header Bar & Adjust Top Spacing */
+    /* 1. Header & Top Spacing */
     header[data-testid="stHeader"] {{
         display: none !important;
     }}
@@ -241,7 +249,7 @@ st.markdown(f"""
         padding-top: 1.5rem !important;
     }}
 
-    /* 2. Align Sidebar Top with PRISM Header */
+    /* 2. Sidebar Alignment & Boundaries */
     div[data-testid="stSidebarHeader"] {{
         height: 0px !important;
         min-height: 0px !important;
@@ -261,8 +269,39 @@ st.markdown(f"""
         padding-top: 0px !important;
         color: {text_primary} !important;
     }}
+    hr {{
+        border: none !important;
+        border-top: 1px solid {hr_color} !important;
+        margin: 1.1rem 0 !important;
+    }}
 
-    /* 3. Main App Background & Typography Contrast */
+    /* 3. Engine Status Pill Badge */
+    .status-pill {{
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 0.82rem;
+        font-family: 'Fira Code', monospace;
+        font-weight: 700;
+        vertical-align: middle;
+    }}
+    .status-online {{
+        background-color: {status_online_bg};
+        color: {status_online_text};
+        border: 1px solid {status_online_border};
+    }}
+    .status-degraded {{
+        background-color: rgba(234, 179, 8, 0.15);
+        color: #CA8A04;
+        border: 1px solid rgba(234, 179, 8, 0.35);
+    }}
+    .status-offline {{
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #DC2626;
+        border: 1px solid rgba(239, 68, 68, 0.35);
+    }}
+
+    /* 4. Canvas & Typography Contrast */
     .stApp {{
         background: {app_bg} !important;
         background-attachment: fixed !important;
@@ -275,15 +314,36 @@ st.markdown(f"""
         color: {text_secondary} !important;
     }}
 
-    /* Input Boxes & Textareas Readability in Both Modes */
-    textarea, input, div[data-baseweb="select"] > div {{
+    /* 5. Input Boxes, BaseWeb Selects & Visible Placeholder Styling */
+    div[data-baseweb="textarea"],
+    div[data-baseweb="input"],
+    div[data-baseweb="base-input"],
+    div[data-baseweb="select"] > div {{
         background-color: {input_bg} !important;
-        color: {text_primary} !important;
         border: 1px solid {input_border} !important;
         border-radius: 10px !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }}
+    div[data-baseweb="textarea"]:focus-within,
+    div[data-baseweb="input"]:focus-within,
+    div[data-baseweb="select"] > div:focus-within {{
+        border: 1.5px solid {input_focus_border} !important;
+    }}
+    textarea, input {{
+        color: {text_primary} !important;
+        background-color: transparent !important;
+    }}
+    ::placeholder,
+    ::-webkit-input-placeholder,
+    ::-moz-placeholder,
+    :-ms-input-placeholder {{
+        color: {placeholder_color} !important;
+        opacity: 0.95 !important;
+        font-weight: 400 !important;
     }}
 
-    /* 4. Center-Aligned PRISM Title with Signature Gradient */
+    /* 6. Header Title Glow */
     .prism-title {{
         font-size: 3.4rem;
         font-weight: 900;
@@ -296,7 +356,6 @@ st.markdown(f"""
         text-align: center;
         filter: drop-shadow(0px 4px 18px rgba(147, 51, 234, 0.28));
     }}
-    
     .prism-tagline {{
         font-size: 1.05rem;
         color: {text_secondary};
@@ -305,7 +364,7 @@ st.markdown(f"""
         text-align: center;
     }}
 
-    /* 5. Frosted Glass Metric Cards */
+    /* 7. Frosted Glass Metric Cards */
     .glass-metric {{
         background: {card_bg};
         backdrop-filter: blur(16px);
@@ -316,7 +375,6 @@ st.markdown(f"""
         text-align: center;
         box-shadow: {card_shadow};
     }}
-
     .metric-label {{
         font-size: 0.78rem;
         color: {text_secondary};
@@ -325,14 +383,13 @@ st.markdown(f"""
         letter-spacing: 1.2px;
         margin-bottom: 6px;
     }}
-
     .metric-value {{
         font-size: 1.35rem;
         font-weight: 800;
         color: {text_primary};
     }}
 
-    /* Health Gauge Box */
+    /* 8. Health Gauge Box */
     .health-glass {{
         background: {health_bg};
         backdrop-filter: blur(16px);
@@ -343,7 +400,7 @@ st.markdown(f"""
         box-shadow: {card_shadow};
     }}
 
-    /* Glass Findings Box */
+    /* 9. Findings Box */
     .finding-glass {{
         background: {card_bg};
         backdrop-filter: blur(12px);
@@ -359,7 +416,6 @@ st.markdown(f"""
     .finding-MEDIUM {{ border-left-color: #F59E0B !important; }}
     .finding-LOW {{ border-left-color: #10B981 !important; }}
 
-    /* Enunciated Line Number Badge */
     .line-badge {{
         background: {line_badge_bg};
         color: {line_badge_text};
@@ -371,8 +427,6 @@ st.markdown(f"""
         font-size: 0.82rem;
         margin-left: 8px;
     }}
-
-    /* Severity Badges */
     .badge-HIGH {{
         background: rgba(239, 68, 68, 0.15);
         color: #DC2626;
@@ -401,7 +455,7 @@ st.markdown(f"""
         border: 1px solid rgba(16, 185, 129, 0.35);
     }}
 
-    /* Code Diff Container */
+    /* 10. Code Diff Container */
     .diff-container {{
         font-family: 'Fira Code', 'Courier New', Courier, monospace;
         font-size: 0.88rem;
@@ -451,7 +505,7 @@ st.markdown(f"""
         color: {diff_unchanged_text};
     }}
 
-    /* Glowing Primary Button */
+    /* 11. Primary Refract Action Button */
     div.stButton > button[kind="primary"] {{
         background: linear-gradient(135deg, #FF007A 0%, #9333EA 55%, #00B8D9 100%) !important;
         border: none !important;
@@ -471,14 +525,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # -------------------------------------------------------------
-# MAIN HEADER
+# MAIN HEADER & INPUT WORKSPACE
 # -------------------------------------------------------------
 st.markdown('<div class="prism-title">PRISM</div>', unsafe_allow_html=True)
 st.markdown('<div class="prism-tagline">Refracting your codebase into distinct security, quality, and algorithmic performance beams.</div>', unsafe_allow_html=True)
 
-# -------------------------------------------------------------
-# INPUT SECTION (STATE-ISOLATED SELECTOR + DEMO PRESETS)
-# -------------------------------------------------------------
 col_mode, col_preset = st.columns([1.2, 1.8])
 
 with col_mode:
@@ -529,7 +580,7 @@ st.markdown("<br>", unsafe_allow_html=True)
 trigger_audit = st.button("Refract & Audit Codebase", use_container_width=True, type="primary")
 
 # -------------------------------------------------------------
-# AUDIT PROCESSING & DISPLAY
+# AUDIT PROCESSING & DASHBOARD DISPLAY
 # -------------------------------------------------------------
 if trigger_audit:
     if not input_mode or not raw_code.strip():
@@ -558,9 +609,6 @@ if trigger_audit:
             except Exception as e:
                 st.error(f"Failed to connect to FastAPI backend: {str(e)}")
 
-        # -------------------------------------------------------------
-        # REPORT DASHBOARD
-        # -------------------------------------------------------------
         if report_data:
             if not report_data.get("is_valid_code", False):
                 st.error(f"Code Rejected: {report_data.get('rejection_reason', 'Provided input is not valid code.')}")
@@ -597,7 +645,6 @@ if trigger_audit:
 
                 st.markdown("<br>", unsafe_allow_html=True)
 
-                # Secondary Quick Stats Grid (Time & Space Complexity)
                 s1, s2, s3, s4 = st.columns(4)
 
                 if orig_time_complexity == refactored_time_complexity and orig_time_complexity != "N/A":
@@ -641,9 +688,6 @@ if trigger_audit:
 
                 st.markdown("<br>", unsafe_allow_html=True)
 
-                # -------------------------------------------------------------
-                # SIDE-BY-SIDE CODE COMPARISON (ORIGINAL VS REFACTORED)
-                # -------------------------------------------------------------
                 st.markdown("### Side-by-Side Code Refactoring & Diff")
 
                 refactored_code = report_data.get("refactored_code") or raw_code
@@ -659,9 +703,6 @@ if trigger_audit:
                     st.markdown("#### 🟢 PRISM Refactored Code (Optimized Patch)")
                     st.markdown(f'<div class="diff-container">{refactored_diff_html}</div>', unsafe_allow_html=True)
 
-                # -------------------------------------------------------------
-                # CLEAN COPY & DOWNLOAD TAB
-                # -------------------------------------------------------------
                 st.markdown("<br>", unsafe_allow_html=True)
                 with st.expander("Download Refactored Code", expanded=False):
                     st.code(refactored_code, language=safe_lang)
@@ -675,9 +716,6 @@ if trigger_audit:
 
                 st.markdown("<br>", unsafe_allow_html=True)
 
-                # -------------------------------------------------------------
-                # DETAILED FINDINGS SECTION (WITH SEVERITY BREAKDOWN)
-                # -------------------------------------------------------------
                 st.markdown("### Audited Findings & Recommendations")
                 findings = report_data.get("findings", [])
 
@@ -685,7 +723,6 @@ if trigger_audit:
                     st.balloons()
                     st.success("No vulnerabilities or anti-patterns detected! Code is production ready.")
                 else:
-                    # Simple severity count calculation (Easy for teammates to explain)
                     high_count = sum(1 for f in findings if str(f.get("severity", "")).upper() == "HIGH")
                     med_count = sum(1 for f in findings if str(f.get("severity", "")).upper() == "MEDIUM")
                     low_count = sum(1 for f in findings if str(f.get("severity", "")).upper() == "LOW")
