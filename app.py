@@ -753,7 +753,7 @@ if trigger_audit:
                                 <span style="font-size: 1.15rem; font-weight: 800; color: {text_primary};">#{i}. {title}</span>
                                 <div>
                                     <span class="{badge_class}">{severity}</span>
-                                    <span class="line-badge">📍 {line_str}</span>
+                                    <span class="line-badge">{line_str}</span>
                                     <span style="color: {text_secondary}; font-size: 0.85rem; font-weight: 600; margin-left: 10px;">Category: {category}</span>
                                 </div>
                             </div>
